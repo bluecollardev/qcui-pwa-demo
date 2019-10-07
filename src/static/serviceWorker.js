@@ -93,7 +93,7 @@ function checkValidServiceWorker(swUrl, config) {
     });
 }
 
-export function register(config) {
+function register(config) {
   if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
     // The URL constructor is available in all browsers that support SW.
     const publicUrl = new URL('/', window.location.href);
@@ -127,10 +127,15 @@ export function register(config) {
   }
 }
 
-export function unregister() {
+function unregister() {
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.ready.then(registration => {
       registration.unregister();
     });
   }
+}
+
+module.exports = {
+  register,
+  unregister,
 }
