@@ -219,15 +219,16 @@ class ExampleView extends Component {
     // console.log(cartContextManager)
 
     return (
-      <div style={{ marginTop: '2rem' }}>
+      <div style={{ marginTop: '4rem' }}>
         <ErrorBoundary>
           <ExampleWithError {...this.props} />
-          <FluxCart.Cart />
+          {/* <FluxCart.Cart /> */}
         </ErrorBoundary>
         <Grid container alignItems="center" justify="space-between" style={{ paddingTop: '1rem', paddingBottom: '1rem' }}>
           <Grid item>
             <BreadcrumbsWithRouter />
           </Grid>
+          <Typography variant="subtitle1"><em>Remember! You need to run your browser in no-cors mode for this to work.</em></Typography>
           {products instanceof Array && (
           <Grid item>
             <ProductSearchForm
@@ -247,9 +248,6 @@ class ExampleView extends Component {
           <CatalogPanel items={products} cart={cart} />
           )}
         </Grid>
-        <div style={{ marginTop: '2rem' }}>
-          <LazyExample {...this.props} />
-        </div>
       </div>
     )
   }
