@@ -19,7 +19,7 @@ export function* getProductData(action) {
     try {
       // Make API call
       console.log('fetch data')
-      const request = yield fetch(`https://www.mec.ca/api/v1/products/search?keywords=${searchString}`, {
+      const response = yield call(fetch, `https://www.mec.ca/api/v1/products/search?keywords=${searchString}`, {
         mode: 'cors', // no-cors, *cors, same-origin
         cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
         // credentials: 'same-origin', // include, *same-origin, omit
@@ -28,9 +28,10 @@ export function* getProductData(action) {
           // 'Origin': 'http://localhost:8080',
           // 'Content-Type': 'application/x-www-form-urlencoded',
         },
-      });
-      const data = yield request.json().products
-      if (data) yield put(productActions.updateProducts(data))
+      })
+      const data = yield call([response, response.json])
+      console.log(data)
+      yield put(productActions.updateProducts(data.products))
     } catch (err) {
       console.log('saga error')
       console.log(err)

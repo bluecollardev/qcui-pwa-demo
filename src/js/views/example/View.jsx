@@ -186,7 +186,7 @@ class ExampleView extends Component {
 
     this.state = Object.assign({}, this.state, {
       categories,
-      searchString: 'kayak',
+      searchString: '',
     })
   }
 
