@@ -13,31 +13,28 @@ export function* getProductData(action) {
   const { expr } = action.payload
 
   // TODO: Optimize this, use a throttle too
-  const searchString = (typeof expr === 'string' && expr.length > 2) ? expr : null
-
-  // Make API call
-  console.log('fetch data')
+  const searchString = (typeof expr === 'string' && expr.length > 0) ? expr : null
 
   if (searchString) {
-    // TODO: Sanitize string
-    const response = yield call(fetch(`https://www.mec.ca/api/v1/products/search?keywords=${searchString}`, {
-      mode: 'cors', // no-cors, *cors, same-origin
-      cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-      // credentials: 'same-origin', // include, *same-origin, omit
-      headers: {
-        'Content-Type': 'application/json;charset=UTF-8',
-        // 'Origin': 'http://localhost:8080',
-        // 'Content-Type': 'application/x-www-form-urlencoded',
-      },
-    }))
-
-    const data = yield response.json()
-
-    // TODO: CORS is busted, just patch in data for now
-    // const results: [productType] = data.products
-    // const results: [productType] = staticData.products
-    const results = data || staticData
-    yield put(productActions.updateProducts(results))
+    try {
+      // Make API call
+      console.log('fetch data')
+      const request = yield fetch(`https://www.mec.ca/api/v1/products/search?keywords=${searchString}`, {
+        mode: 'cors', // no-cors, *cors, same-origin
+        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+        // credentials: 'same-origin', // include, *same-origin, omit
+        headers: {
+          'Content-Type': 'application/json;charset=UTF-8',
+          // 'Origin': 'http://localhost:8080',
+          // 'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      });
+      const data = yield request.json().products
+      if (data) yield put(productActions.updateProducts(data))
+    } catch (err) {
+      console.log('saga error')
+      console.log(err)
+    }
   }
 }
 

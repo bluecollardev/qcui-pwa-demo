@@ -214,9 +214,9 @@ class ExampleView extends Component {
     // Note for i18n and i10n
     // if `id` is found, it will use the matched message
     // otherwise, it will use defaultMessage as fallback
-    console.log('cart context + contextManager')
-    console.log(cart)
-    console.log(cartContextManager)
+    // console.log('cart context + contextManager')
+    // console.log(cart)
+    // console.log(cartContextManager)
 
     return (
       <div style={{ marginTop: '2rem' }}>
