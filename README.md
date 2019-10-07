@@ -74,7 +74,8 @@ $ npm run dev       # build and watch, but javascript not minified
 $ npm run build     # build a minified production version
 $ npm run build:s3  # build a minified production version, deploy it to S3 as a static app
 $ npm run lint      # linting using ESLint
-$ npm run test      # run test using Jest
+$ npm run test      # run all tests
+$ npm run test:jest # run tests using Jest
 $ npm run clean     # it runs before each build, so you don't need to
 ```
 
