@@ -19,7 +19,7 @@
   "html": [
     {
 			"name": "homepage",
-      "title": "Everything is Awesome",
+      "title": "PWA Demo",
       "template": "_default.html",
       "filename": "index.html"
     }

@@ -38,7 +38,7 @@ Workflow
 * Productivity
   * Highly configurable build and workflow system ( webpack )
   * Minimal setup time and allow you to invest into things that matters
-  * Everything automatic, you just care about development, nothing else \o/ Yeah ?!
+  * Everything automatic, you just care about development, nothing else
 
 If you are interested, please read the `package.json` for all installed modules and plugins.
 
