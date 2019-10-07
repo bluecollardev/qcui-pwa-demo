@@ -131,6 +131,13 @@ export default function IntegrationAutosuggest(props) {
   }
 
   const handleChange = name => (event, { newValue }) => {
+    const { onSearchExprChanged } = props
+    if (props && typeof onSearchExprChanged === 'function') {
+      // Call our actions
+      console.log(`search expression change handled, new value is: ${newValue}`)
+      onSearchExprChanged(newValue)
+    }
+
     setState({
       ...state,
       [name]: newValue,
@@ -167,13 +174,6 @@ export default function IntegrationAutosuggest(props) {
             },
             InputLabelProps: {
               shrink: true,
-            },
-            startAdornment: () => {
-              return (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              )
             },
           }}
           theme={{

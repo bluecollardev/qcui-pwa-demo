@@ -1,1 +1,3 @@
-export { default as MainAppBar } from './MainAppBar'
+import { MainAppBarWithContext } from './MainAppBar'
+
+export default MainAppBarWithContext

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { PureComponent } from 'react'
 import Avatar from '@material-ui/core/Avatar'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
@@ -13,6 +13,7 @@ import SearchIcon from '@material-ui/icons/Search'
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart'
 
 import { deepOrange, deepPurple, green } from '@material-ui/core/colors'
+import PropTypes from 'prop-types'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -47,7 +48,7 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-export default function MainAppBar() {
+function MainAppBar({ cartItemsCount }) {
   const classes = useStyles()
 
   return (
@@ -72,7 +73,7 @@ export default function MainAppBar() {
             aria-label="open cart"
           >
             My Items
-            <Badge badgeContent={3} color="secondary" className={classes.cartIcon}>
+            <Badge badgeContent={cartItemsCount} color="secondary" className={classes.cartIcon}>
               <ShoppingCartIcon />
             </Badge>
           </Button>
@@ -82,3 +83,47 @@ export default function MainAppBar() {
     </div>
   )
 }
+
+class MainAppBarWithContext extends PureComponent {
+  static contextTypes = {
+    cartContextManager: PropTypes.object,
+    cart: PropTypes.object,
+  }
+
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      cartItemsCount: 0,
+    }
+  }
+
+  componentDidMount() {
+    const { cart, cartContextManager } = this.context
+
+    const initialCount = cart.store.getCount()
+    this.setState({ cartItemsCount: initialCount })
+
+    cartContextManager.subscribe((contextValue) => {
+      console.log('update cart using context')
+      console.log(contextValue)
+
+      const count = contextValue.store.getCount()
+
+      this.setState({
+        cartItemsCount: count,
+      })
+    })
+  }
+
+  render() {
+    const { cart } = this.context
+    const { cartItemsCount } = this.state
+
+    return (
+      <MainAppBar {...this.props} cart={cart} cartItemsCount={cartItemsCount} />
+    )
+  }
+}
+
+export { MainAppBarWithContext }

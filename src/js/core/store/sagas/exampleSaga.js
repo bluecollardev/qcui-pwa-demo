@@ -4,7 +4,7 @@ import {
   actions as exampleActions,
 } from '~/modules/example/redux'
 
-import { exampleType } from '~/modules/example/types'
+import { exampleType } from '~/core/store/types'
 
 export function* fetchExampleData() {
   // pretend there is an api call

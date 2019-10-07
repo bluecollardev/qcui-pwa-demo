@@ -1,7 +1,7 @@
 import { createAction, handleActions } from 'redux-actions'
 import { Map } from 'immutable'
 
-import type { exampleType } from './types'
+import type { exampleType } from '~/core/store/types'
 
 const GET_EXAMPLE = 'app/example/GET_EXAMPLE'
 const UPDATE_EXAMPLE = 'app/example/UPDATE_EXAMPLE'

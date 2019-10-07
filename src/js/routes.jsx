@@ -10,7 +10,7 @@ import styles from '../style/index.css'
 // This is show case how you can lazy loading component
 const ExampleRouteHandler = LazyLoading(() => import('views/example'))
 // const Header = LazyLoading(() => import('~/core/components/header/Header'))
-const MainAppBar = LazyLoading(() => import('~/core/components/app-bar/MainAppBar'))
+const MainAppBar = LazyLoading(() => import('~/core/components/app-bar'))
 
 // Please remove that, it is an example
 const JustAnotherPage = () => (

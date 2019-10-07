@@ -141,7 +141,7 @@ webpackConfig.module.rules = webpackConfig.module.rules.concat({
 webpackConfig.plugins = webpackConfig.plugins.concat(htmlPlugins)
 
 // webpack 4, if you set mode = 'development', it will set this value
-// webpackConfig.devtool = 'cheap-module-eval-source-map';
+webpackConfig.devtool = 'source-map';
 
 webpackConfig.entry = [
   'babel-polyfill',
