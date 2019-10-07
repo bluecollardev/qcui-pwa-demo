@@ -1,4 +1,6 @@
-## Boilerplate for a React / Redux e-commerce PWA.
+## Boilerplate and Sample App for a React / Redux e-commerce PWA
+
+View the demo here: https://mec-demo.bluecollardev.com/
 
 ### Features / Benefits
 
