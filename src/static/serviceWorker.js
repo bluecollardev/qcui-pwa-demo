@@ -93,7 +93,7 @@ function checkValidServiceWorker(swUrl, config) {
     });
 }
 
-function register(config) {
+function register(config, window) {
   if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
     // The URL constructor is available in all browsers that support SW.
     const publicUrl = new URL('/', window.location.href);
