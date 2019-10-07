@@ -45,6 +45,8 @@ ReactDOM.render(
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA
 // serviceWorker.unregister();
-document.onload(() => {
-  serviceWorker.register()
-})
+if (typeof window !== undefined) {
+  window.addEventListener('load', function() {
+    serviceWorker.register()
+  })
+}
