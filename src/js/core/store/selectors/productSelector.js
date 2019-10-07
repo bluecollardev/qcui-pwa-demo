@@ -8,7 +8,8 @@ const resultsSelector = createSelector(
 )
 
 export const productsSelector = (state) => {
-  const products = resultsSelector(state).map((product) => {
+  const results = resultsSelector(state) || []
+  const products = results.map((product) => {
     // Map the object ID, in this case it's product_code
     return {
       id: product.product_code,
@@ -16,7 +17,7 @@ export const productsSelector = (state) => {
       data: product,
       options: [],
     }
-  }) || []
+  })
 
   return products
 }
