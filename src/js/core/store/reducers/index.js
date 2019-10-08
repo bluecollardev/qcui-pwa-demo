@@ -3,8 +3,10 @@ import { combineReducers } from 'redux'
 import example from '~/modules/example/redux'
 // Example importing a core slice
 import product from './productReducers'
+import category from './categoryReducers'
 
 export default combineReducers({
   example,
   product,
+  category,
 })

@@ -24,3 +24,9 @@ export type productType = {
   "tracking": Object,
   "product_details_url": string
 };
+
+export type categoryType = {
+  id: string,
+  name: string,
+  product_count: Number
+}

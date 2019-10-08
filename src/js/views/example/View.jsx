@@ -19,13 +19,16 @@ import LabelIcon from '@material-ui/icons/Label'
 import ExpandLess from '@material-ui/icons/ExpandLess'
 import ExpandMore from '@material-ui/icons/ExpandMore'
 
-import { FluxCart } from 'quickcommerce-ui-cart'
+// import { FluxCart } from 'quickcommerce-ui-cart'
 
 import { actions as exampleActions } from '~/modules/example/redux'
 import { exampleSelector } from '~/core/store/selectors/exampleSelector'
 
 import { actions as productActions } from '~/core/store/actions/productActions'
 import { productsSelector } from '~/core/store/selectors/productSelector'
+
+import { actions as categoryActions } from '~/core/store/actions/categoryActions'
+import { categoriesSelector } from '~/core/store/selectors/categorySelector'
 
 import { ExampleWithError } from '~/modules/example'
 import { ErrorBoundary } from '~/modules/utilities'
@@ -35,8 +38,6 @@ import { ProductCard } from '~/core/components/product-card'
 import { ProductSearchForm } from '~/core/components/product-search-form'
 
 import LazyLoading from '~/modules/lazy-loading'
-
-import mecCatalogData from '~/../data.json'
 
 // This is lazy loading example
 const LazyExample = LazyLoading(() => import('~/modules/example/Example'))
@@ -178,14 +179,7 @@ class ExampleView extends Component {
   constructor(props) {
     super(props)
 
-    const mecCategories = mecCatalogData.categories.sub_categories
-    const categories = mecCategories.map((category) => {
-      // Map the object ID, in this case it's product_code
-      return category
-    })
-
     this.state = Object.assign({}, this.state, {
-      categories,
       searchString: '',
     })
   }
@@ -207,8 +201,7 @@ class ExampleView extends Component {
   }
 
   render() {
-    const { products } = this.props
-    const { categories } = this.state
+    const { products, categories } = this.props
     const { cart, cartContextManager } = this.context
 
     // Note for i18n and i10n
@@ -256,11 +249,13 @@ class ExampleView extends Component {
 const mapStateToProps = (state) => ({
   example: exampleSelector(state),
   products: productsSelector(state),
+  categories: categoriesSelector(state),
 })
 
 const mapDispatchToProps = {
   ...exampleActions,
   ...productActions,
+  ...categoryActions,
 }
 
 export default connect(
