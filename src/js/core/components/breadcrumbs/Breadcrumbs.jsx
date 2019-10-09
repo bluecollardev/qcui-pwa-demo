@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react'
+import React, { Fragment } from 'react'
 
 import { Breadcrumbs, Link, Typography } from '@material-ui/core'
 import NavigateNextIcon from '@material-ui/icons/NavigateNext'
@@ -14,18 +14,21 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 export default function CatalogBreadcrumbs(props) {
-  const { location } = props
+  const { location, path, history } = props
   const { pathname } = location
 
   const classes = useStyles()
 
-  const isHome = pathname === '/'
-  const isJustAnotherPage = pathname === '/page'
-
-  function handleClick(event) {
-    event.preventDefault()
-    alert('You clicked a breadcrumb.')
+  function handleClick(e, categoryId) {
+    e.preventDefault()
+    history.push({
+      pathname: '/search',
+      search: `?category=${categoryId}`,
+    })
   }
+
+  // console.log('dumping path')
+  // console.log(path)
 
   return (
     <Breadcrumbs
@@ -33,13 +36,18 @@ export default function CatalogBreadcrumbs(props) {
       aria-label="breadcrumb"
       className={classes.breadcrumbs}
     >
-      <Link color="inherit" href="/" onClick={handleClick}>
-        Categories
-      </Link>
-      <Link color="inherit" href="/getting-started/installation/" onClick={handleClick}>
-        Suits
-      </Link>
-      <Typography color="textPrimary">Breadcrumb</Typography>
+      {path.map((chunk, idx) => {
+        let chunkElement = null
+        if (idx < path.length - 1) {
+          chunkElement = <Link key={chunk.id} color="inherit" href="/" onClick={(e) => handleClick(e, chunk.id)}>{chunk.name}</Link>
+        }
+
+        if (idx === path.length - 1) {
+          chunkElement = <Typography key={chunk.id} color="textPrimary">{chunk.name}</Typography>
+        }
+
+        return chunkElement
+      })}
     </Breadcrumbs>
   )
 }

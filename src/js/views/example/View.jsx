@@ -93,7 +93,7 @@ function SidebarFilters(props) {
     const { onCategoryClicked } = props
     if (props && typeof onCategoryClicked === 'function') {
       // Call our actions
-      console.log(`category change handled, new value is: ${id}`)
+      // console.log(`category change handled, new value is: ${id}`)
       onCategoryClicked(id)
     }
   }
@@ -200,8 +200,8 @@ class ExampleView extends Component {
     const { history } = props
 
     this.unlisten = history.listen((historyState) => {
-      console.log('history state')
-      console.log(historyState)
+      // console.log('history state')
+      // console.log(historyState)
       const queryString = (historyState.search.charAt(0) === '?')
         ? historyState.search.slice(1, historyState.search.length)
         : historyState.search
@@ -243,8 +243,8 @@ class ExampleView extends Component {
   async searchProducts(queryString) {
     if (typeof queryString === 'string' && queryString.length > 0) {
       const queryParams = qs.parse(queryString)
-      console.log('dumping query params')
-      console.log(queryParams)
+      // console.log('dumping query params')
+      // console.log(queryParams)
 
       const searchString = (typeof queryParams.keyword !== 'undefined') ? queryParams.keyword : ''
       const categoryId = (typeof queryParams.category !== 'undefined') ? queryParams.category : undefined
@@ -263,6 +263,27 @@ class ExampleView extends Component {
     if (typeof categoryId === 'string') queryParams.add(`category=${categoryId}`)
 
     return (queryParams.size > 0) ? `?${Array.from(queryParams).join('&')}` : null
+  }
+
+  buildBreadcrumbs() {
+    const { categories } = this.props
+    const { searchString, categoryId } = this.state
+
+    // TODO: Get default category from store - right now we aren't saving it...
+    const path = [{
+      id: 'category%3A100',
+      name: 'All Products',
+    }]
+
+    if (typeof categoryId === 'string') {
+      // API returns eg. category:123 but the colon will be encoded...
+      const category = categories.find((c) => c.id === encodeURIComponent(categoryId))
+      if (category) path.push(category)
+    } else {
+      // console.log('something is up with this....')
+    }
+
+    return path
   }
 
   handleSearchExprChanged(newSearchString) {
@@ -312,7 +333,7 @@ class ExampleView extends Component {
         </ErrorBoundary>
         <Grid container alignItems="center" justify="space-between" style={{ paddingTop: '1rem', paddingBottom: '1rem' }}>
           <Grid item>
-            <BreadcrumbsWithRouter />
+            <BreadcrumbsWithRouter key={JSON.stringify(this.buildBreadcrumbs())} path={this.buildBreadcrumbs()} />
           </Grid>
           <Typography variant="subtitle1"><em>Remember! You need to run your browser in no-cors mode for this to work.</em></Typography>
           {products instanceof Array && (

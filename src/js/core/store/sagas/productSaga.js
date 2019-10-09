@@ -23,7 +23,7 @@ export function* getProductData(action) {
 
   try {
     // Make API call
-    console.log('fetch data')
+    // console.log('fetch data')
     const response = yield call(fetch, `https://www.mec.ca/api/v1/products/search?${qs.stringify(filteredParams)}`, {
       mode: 'cors', // no-cors, *cors, same-origin
       cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
@@ -35,7 +35,7 @@ export function* getProductData(action) {
       },
     })
     const data = yield call([response, response.json])
-    console.log(data)
+    // console.log(data)
     yield put(productActions.updateProducts(data.products))
   } catch (err) {
     console.log('saga error')
@@ -44,8 +44,8 @@ export function* getProductData(action) {
 }
 
 function* watchGetProducts(action) {
-  console.log('watchGetProducts action')
-  console.log(action)
+  // console.log('watchGetProducts action')
+  // console.log(action)
   yield takeLatest(productConstants.GET_PRODUCTS, getProductData)
 }
 

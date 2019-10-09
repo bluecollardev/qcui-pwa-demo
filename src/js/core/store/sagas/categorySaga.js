@@ -42,8 +42,8 @@ export function* getCategoryData(action) {
 }
 
 function* watchGetCategories(action) {
-  console.log('watchGetCategories action')
-  console.log(action)
+  // console.log('watchGetCategories action')
+  // console.log(action)
   yield takeLatest(categoryConstants.GET_CATEGORIES, getCategoryData)
 }
 

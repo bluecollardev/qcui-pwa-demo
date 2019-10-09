@@ -6,37 +6,37 @@ import staticData from './productReducersData'
 
 export const reducers = {
   [productConstants.GET_PRODUCTS]: (state, { payload }) => {
-    console.log('get products reducer')
-    console.log(payload)
+    // console.log('get products reducer')
+    // console.log(payload)
     const newState = state.merge({
       ...payload,
     })
 
-    console.log(newState)
-    console.log('-------')
+    // console.log(newState)
+    // console.log('-------')
 
     return newState
   },
   [productConstants.UPDATE_PRODUCTS]: (state, { payload }) => {
-    console.log('update products reducer')
-    console.log(payload)
+    // console.log('update products reducer')
+    // console.log(payload)
     const newState = state.merge({
       ...payload,
     })
 
-    console.log(newState)
-    console.log('-------')
+    // console.log(newState)
+    // console.log('-------')
 
     return newState
   },
   [productConstants.FILTER_PRODUCTS]: (state, { payload }) => {
-    console.log('filter products reducer')
+    // console.log('filter products reducer')
     const newState = state.merge({
       ...payload,
     })
 
-    console.log(newState)
-    console.log('-------')
+    // console.log(newState)
+    // console.log('-------')
 
     return newState
   },
