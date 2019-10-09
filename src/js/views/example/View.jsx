@@ -255,12 +255,6 @@ class ExampleView extends Component {
     products: [],
   }
 
-  state = {
-    myArbitraryNumber: Math.floor(Math.random() * 10000),
-    currentTime: new Date(),
-    unlisten: null,
-  }
-
   constructor(props) {
     super(props)
 
@@ -275,6 +269,13 @@ class ExampleView extends Component {
 
       this.searchProducts(queryString)
     })
+
+    this.state = {
+      myArbitraryNumber: Math.floor(Math.random() * 10000),
+      currentTime: new Date(),
+      unlisten: null,
+      showMessages: true,
+    }
   }
 
   componentDidMount() {
@@ -383,7 +384,7 @@ class ExampleView extends Component {
   render() {
     const { products, categories } = this.props
     const { cart, cartContextManager } = this.context
-    const { searchString } = this.state
+    const { searchString, showMessages } = this.state
 
     // Note for i18n and i10n
     // if `id` is found, it will use the matched message
@@ -395,13 +396,12 @@ class ExampleView extends Component {
     return (
       <div style={{ marginTop: '5rem' }}>
         <Snackbar
+          key={showMessages}
           anchorOrigin={{
             vertical: 'top',
             horizontal: 'center',
           }}
-          open={true}
-          autoHideDuration={6000}
-          // onClose={handleClose}
+          open={showMessages}
         >
           <SnackbarContentWrapper
             variant="error"
@@ -410,11 +410,14 @@ class ExampleView extends Component {
                 <strong style={{ marginRight: '0.5rem' }}>Important!</strong>You need to run your browser with CORS disabled for this demo to work.
               </Fragment>
             )}
+            onClose={() => {
+              console.log('close messages')
+              this.setState({ showMessages: false })
+            }}
           />
         </Snackbar>
         <ErrorBoundary>
           <ExampleWithError {...this.props} />
-          {/* <FluxCart.Cart /> */}
         </ErrorBoundary>
         <Grid container alignItems="center" justify="space-between" style={{ paddingTop: '1rem', paddingBottom: '1rem' }}>
           <Grid item>

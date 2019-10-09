@@ -1,4 +1,7 @@
-import React, { PureComponent } from 'react'
+import React, { Component, Fragment } from 'react'
+import PropTypes from 'prop-types'
+
+import { Drawer } from '@material-ui/core'
 import Avatar from '@material-ui/core/Avatar'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
@@ -13,7 +16,8 @@ import SearchIcon from '@material-ui/icons/Search'
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart'
 
 import { deepOrange, deepPurple, green } from '@material-ui/core/colors'
-import PropTypes from 'prop-types'
+
+import { FluxCart } from 'quickcommerce-ui-cart'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -48,8 +52,69 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-function MainAppBar({ cartItemsCount }) {
+class RightSidebar extends Component {
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      top: false,
+      left: false,
+      bottom: false,
+      right: false,
+    }
+  }
+
+  toggleDrawer(side, open) {
+    /* if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+      return
+    } */
+    const { state } = this
+    this.setState(Object.assign({}, state, {
+      [side]: open,
+    }))
+  }
+
+  cartContent(side) {
+    return (
+      <div
+        // className={classes.cart}
+        role="presentation"
+        onClick={() => this.toggleDrawer(side, false)}
+        onKeyDown={() => this.toggleDrawer(side, false)}
+      >
+        <FluxCart.Cart />
+      </div>
+    )
+  }
+
+  render() {
+    const {
+      top, bottom, right, left,
+    } = this.state
+
+    return (
+      <Fragment>
+        <Drawer className="top-drawer" anchor="top" open={top} onClose={() => this.toggleDrawer('top', false)}>
+          {this.cartContent('top')}
+        </Drawer>
+        <Drawer className="bottom-drawer" anchor="bottom" open={bottom} onClose={() => this.toggleDrawer('bottom', false)}>
+          {this.cartContent('bottom')}
+        </Drawer>
+        <Drawer className="right-drawer" anchor="right" open={right} onClose={() => this.toggleDrawer('right', false)}>
+          {this.cartContent('right')}
+        </Drawer>
+        <Drawer className="left-drawer" anchor="left" open={left} onClose={() => this.toggleDrawer('left', false)}>
+          {this.cartContent('left')}
+        </Drawer>
+      </Fragment>
+
+    )
+  }
+}
+
+function MainAppBar(props) {
   const classes = useStyles()
+  const { cartItemsCount, cartDrawerRef, toggleCart } = props
 
   return (
     <div className={classes.root}>
@@ -71,6 +136,11 @@ function MainAppBar({ cartItemsCount }) {
             variant="outlined"
             color="inherit"
             aria-label="open cart"
+            onClick={() => {
+              if (typeof toggleCart === 'function') {
+                toggleCart()
+              }
+            }}
           >
             My Items
             <Badge badgeContent={cartItemsCount} color="secondary" className={classes.cartIcon}>
@@ -80,11 +150,12 @@ function MainAppBar({ cartItemsCount }) {
           <Avatar className={classes.avatar}>LL</Avatar>
         </Toolbar>
       </AppBar>
+      <RightSidebar ref={cartDrawerRef} />
     </div>
   )
 }
 
-class MainAppBarWithContext extends PureComponent {
+class MainAppBarWithContext extends Component {
   static contextTypes = {
     cartContextManager: PropTypes.object,
     cart: PropTypes.object,
@@ -95,6 +166,7 @@ class MainAppBarWithContext extends PureComponent {
 
     this.state = {
       cartItemsCount: 0,
+      // cartDrawerIsOpen: false,
     }
   }
 
@@ -116,12 +188,17 @@ class MainAppBarWithContext extends PureComponent {
     })
   }
 
+  toggleCart() {
+    console.log('toggle cart')
+    this.cartDrawer.toggleDrawer('top', true)
+  }
+
   render() {
     const { cart } = this.context
     const { cartItemsCount } = this.state
 
     return (
-      <MainAppBar {...this.props} cart={cart} cartItemsCount={cartItemsCount} />
+      <MainAppBar {...this.props} cart={cart} cartItemsCount={cartItemsCount} cartDrawerRef={(drawer) => this.cartDrawer = drawer} toggleCart={() => this.toggleCart()} />
     )
   }
 }
