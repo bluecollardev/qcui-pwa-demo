@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import qs from 'querystring'
+import clsx from 'clsx'
 
 // This is i18n and i10n
 // import { FormattedMessage, FormattedDate, FormattedTime } from 'react-intl'
@@ -12,13 +13,20 @@ import { makeStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid'
 import {
-  Collapse, List, ListItem, ListItemIcon, ListItemText, ListItemSecondaryAction, IconButton, Badge,
+  Snackbar, SnackbarContent, Collapse, List, ListItem, ListItemIcon, ListItemText, ListItemSecondaryAction, IconButton, Badge,
 } from '@material-ui/core'
 
+import WarningIcon from '@material-ui/icons/Warning'
+import ErrorIcon from '@material-ui/icons/Error'
+import InfoIcon from '@material-ui/icons/Info'
+import CheckCircleIcon from '@material-ui/icons/CheckCircle'
+import CloseIcon from '@material-ui/icons/Close'
 import CategoryIcon from '@material-ui/icons/Category'
 import LabelIcon from '@material-ui/icons/Label'
 import ExpandLess from '@material-ui/icons/ExpandLess'
 import ExpandMore from '@material-ui/icons/ExpandMore'
+
+import { amber, green } from '@material-ui/core/colors'
 
 // import { FluxCart } from 'quickcommerce-ui-cart'
 
@@ -44,7 +52,7 @@ import LazyLoading from '~/modules/lazy-loading'
 const LazyExample = LazyLoading(() => import('~/modules/example/Example'))
 const BreadcrumbsWithRouter = withRouter((props) => <Breadcrumbs {...props} />)
 
-const drawerWidth = 240;
+const drawerWidth = 240
 
 const useStyles = makeStyles((theme) => ({
   sidebarList: {
@@ -83,11 +91,11 @@ function SidebarFilters(props) {
 
   const { items } = props
 
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = React.useState(true)
 
   const handleClick = () => {
-    setOpen(!open);
-  };
+    setOpen(!open)
+  }
 
   const handleCategoryClick = (id) => {
     const { onCategoryClicked } = props
@@ -170,6 +178,65 @@ function CatalogPanel({ cart, items }) {
         )}
       </Grid>
     </ErrorBoundary>
+  )
+}
+
+const variantIcon = {
+  success: CheckCircleIcon,
+  warning: WarningIcon,
+  error: ErrorIcon,
+  info: InfoIcon,
+}
+
+const snackbarStyles = makeStyles(theme => ({
+  success: {
+    backgroundColor: green[600],
+  },
+  error: {
+    backgroundColor: theme.palette.error.dark,
+  },
+  info: {
+    backgroundColor: theme.palette.primary.main,
+  },
+  warning: {
+    backgroundColor: amber[700],
+  },
+  icon: {
+    fontSize: 20,
+  },
+  iconVariant: {
+    opacity: 0.9,
+    marginRight: theme.spacing(1),
+  },
+  message: {
+    display: 'flex',
+    alignItems: 'center',
+  },
+}))
+
+
+function SnackbarContentWrapper(props) {
+  const classes = snackbarStyles()
+  const { className, message, onClose, variant, ...other } = props
+  const Icon = variantIcon[variant]
+
+  return (
+    <SnackbarContent
+      className={clsx(classes[variant], className)}
+      aria-describedby="client-snackbar"
+      message={
+        <span id="client-snackbar" className={classes.message}>
+          <Icon className={clsx(classes.icon, classes.iconVariant)} />
+          {message}
+        </span>
+      }
+      action={[
+        <IconButton key="close" aria-label="close" color="inherit" onClick={onClose}>
+          <CloseIcon className={classes.icon} />
+        </IconButton>,
+      ]}
+      {...other}
+    />
   )
 }
 
@@ -326,7 +393,25 @@ class ExampleView extends Component {
     // console.log(cartContextManager)
 
     return (
-      <div style={{ marginTop: '4rem' }}>
+      <div style={{ marginTop: '5rem' }}>
+        <Snackbar
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'center',
+          }}
+          open={true}
+          autoHideDuration={6000}
+          // onClose={handleClose}
+        >
+          <SnackbarContentWrapper
+            variant="error"
+            message={(
+              <Fragment>
+                <strong style={{ marginRight: '0.5rem' }}>Important!</strong>You need to run your browser with CORS disabled for this demo to work.
+              </Fragment>
+            )}
+          />
+        </Snackbar>
         <ErrorBoundary>
           <ExampleWithError {...this.props} />
           {/* <FluxCart.Cart /> */}
@@ -335,7 +420,7 @@ class ExampleView extends Component {
           <Grid item>
             <BreadcrumbsWithRouter key={JSON.stringify(this.buildBreadcrumbs())} path={this.buildBreadcrumbs()} />
           </Grid>
-          <Typography variant="subtitle1"><em>Remember! You need to run your browser in no-cors mode for this to work.</em></Typography>
+          <Typography variant="subtitle1"><em></em></Typography>
           {products instanceof Array && (
           <Grid item>
             <ProductSearchForm
