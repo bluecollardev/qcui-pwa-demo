@@ -1,4 +1,6 @@
 import { put, fork, takeLatest, call } from 'redux-saga/effects'
+import qs from 'querystring'
+
 import {
   actions as productActions,
   constants as productConstants,
@@ -10,32 +12,34 @@ import staticData from '../reducers/productReducersData'
 
 export function* getProductData(action) {
   // console.log('getProductData action')
-  const { expr } = action.payload
+  const { params } = action.payload
+  const filteredParams = {}
 
-  // TODO: Optimize this, use a throttle too
-  const searchString = (typeof expr === 'string' && expr.length > 0) ? expr : null
-
-  if (searchString) {
-    try {
-      // Make API call
-      console.log('fetch data')
-      const response = yield call(fetch, `https://www.mec.ca/api/v1/products/search?keywords=${searchString}`, {
-        mode: 'cors', // no-cors, *cors, same-origin
-        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-        // credentials: 'same-origin', // include, *same-origin, omit
-        headers: {
-          'Content-Type': 'application/json;charset=UTF-8',
-          // 'Origin': 'http://localhost:8080',
-          // 'Content-Type': 'application/x-www-form-urlencoded',
-        },
-      })
-      const data = yield call([response, response.json])
-      console.log(data)
-      yield put(productActions.updateProducts(data.products))
-    } catch (err) {
-      console.log('saga error')
-      console.log(err)
+  Object.keys(params).forEach((key) => {
+    if (params[key] !== undefined) {
+      filteredParams[key] = params[key]
     }
+  })
+
+  try {
+    // Make API call
+    console.log('fetch data')
+    const response = yield call(fetch, `https://www.mec.ca/api/v1/products/search?${qs.stringify(filteredParams)}`, {
+      mode: 'cors', // no-cors, *cors, same-origin
+      cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+      // credentials: 'same-origin', // include, *same-origin, omit
+      headers: {
+        'Content-Type': 'application/json;charset=UTF-8',
+        // 'Origin': 'http://localhost:8080',
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    })
+    const data = yield call([response, response.json])
+    console.log(data)
+    yield put(productActions.updateProducts(data.products))
+  } catch (err) {
+    console.log('saga error')
+    console.log(err)
   }
 }
 

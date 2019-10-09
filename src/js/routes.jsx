@@ -35,6 +35,10 @@ module.exports = (
           return <ExampleRouteHandler {...props} />
         }}
         />
+        <Route path="/search/" render={(props) => {
+          return <ExampleRouteHandler {...props} />
+        }}
+        />
         <Route path="/page" component={JustAnotherPage} />
         <Route path="*" component={ExampleRouteHandler} />
       </Switch>

@@ -15,7 +15,7 @@ export const constants = {
 // ------------------------------------
 // Actions
 // ------------------------------------
-export const getProducts = createAction(GET_PRODUCTS, (expr: string) => ({ expr }))
+export const getProducts = createAction(GET_PRODUCTS, (params: Object) => ({ params }))
 export const updateProducts = createAction(UPDATE_PRODUCTS, (results: []) => ({ results }))
 export const filterProducts = createAction(FILTER_PRODUCTS, (results: []) => ({ results }))
 

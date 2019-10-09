@@ -4,7 +4,7 @@ import { Provider } from 'react-redux'
 // You could use BrowserRoute or HashRoute
 // But passing in history directly to Route will
 // give your app more flexibility on deeper integration of `history`
-import { Router } from 'react-router-dom'
+import { Router, BrowserRouter } from 'react-router-dom'
 
 import { FluxCart } from 'quickcommerce-ui-cart'
 
@@ -14,7 +14,7 @@ class App extends Component {
   get content() {
     const { routes, history } = this.props
 
-    return <Router history={history}>{routes}</Router>
+    return <BrowserRouter history={history}>{routes}</BrowserRouter>
   }
 
   render() {

@@ -5,7 +5,7 @@ import { fromJS } from 'immutable'
 import routes from './routes'
 import App from './App'
 
-import * as serviceWorker from '../static/serviceWorker'
+// import * as serviceWorker from '../static/serviceWorker'
 
 import { configureStore } from './core/store'
 import { history } from './app-history'

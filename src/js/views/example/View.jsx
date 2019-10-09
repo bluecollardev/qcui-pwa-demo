@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
+import qs from 'querystring'
 
 // This is i18n and i10n
 // import { FormattedMessage, FormattedDate, FormattedTime } from 'react-intl'
@@ -77,8 +78,10 @@ const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
 }))
 
-function SidebarFilters({ items }) {
+function SidebarFilters(props) {
   const classes = useStyles()
+
+  const { items } = props
 
   const [open, setOpen] = React.useState(true);
 
@@ -86,10 +89,19 @@ function SidebarFilters({ items }) {
     setOpen(!open);
   };
 
+  const handleCategoryClick = (id) => {
+    const { onCategoryClicked } = props
+    if (props && typeof onCategoryClicked === 'function') {
+      // Call our actions
+      console.log(`category change handled, new value is: ${id}`)
+      onCategoryClicked(id)
+    }
+  }
+
   return (
     <ErrorBoundary>
       <Grid item xs={12} sm={4} md={4} lg={3} xl={2} className={classes.sidebar}>
-        <Typography component="h4">Filter By</Typography>
+        <Typography component="h4">Browse By</Typography>
         <List
           component="nav"
           aria-labelledby="nested-list-subheader"
@@ -110,7 +122,12 @@ function SidebarFilters({ items }) {
           <Collapse in={open} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
               {items.map((item) => (
-                <ListItem button className={classes.sidebarNestedList} key={item.id}>
+                <ListItem
+                  button
+                  className={classes.sidebarNestedList}
+                  key={item.id}
+                  onClick={() => handleCategoryClick(item.id)}
+                >
                   <ListItemIcon>
                     <LabelIcon />
                   </ListItemIcon>
@@ -174,35 +191,111 @@ class ExampleView extends Component {
   state = {
     myArbitraryNumber: Math.floor(Math.random() * 10000),
     currentTime: new Date(),
+    unlisten: null,
   }
 
   constructor(props) {
     super(props)
 
-    this.state = Object.assign({}, this.state, {
-      searchString: '',
+    const { history } = props
+
+    this.unlisten = history.listen((historyState) => {
+      console.log('history state')
+      console.log(historyState)
+      const queryString = (historyState.search.charAt(0) === '?')
+        ? historyState.search.slice(1, historyState.search.length)
+        : historyState.search
+
+      this.searchProducts(queryString)
     })
   }
 
   componentDidMount() {
-    const { getAwesomeCode } = this.props
+    const { location } = this.props
+    const queryString = (location.search.charAt(0) === '?')
+      ? location.search.slice(1, location.search.length)
+      : location.search
 
-    getAwesomeCode()
+    this.searchProducts(queryString)
+  }
+
+  componentWillUnmount() {
+    this.unlisten()
   }
 
   async setSearchString(searchString) {
-    this.setState({ searchString }, () => {
-      // this.tempFetchData()
+    return this.setState({ searchString })
+  }
+
+  async setCategoryId(categoryId) {
+    return this.setState({ categoryId })
+  }
+
+  getProducts() {
+    const { getProducts } = this.props
+    const { searchString, categoryId } = this.state
+    getProducts({
+      keywords: (typeof searchString === 'string' && searchString.length > 0) ? searchString : undefined,
+      category: (typeof categoryId === 'string' && categoryId.length > 0) ? categoryId : undefined,
     })
   }
 
-  handleSearchExprChanged(newValue) {
-    this.props.getProducts(newValue)
+  async searchProducts(queryString) {
+    if (typeof queryString === 'string' && queryString.length > 0) {
+      const queryParams = qs.parse(queryString)
+      console.log('dumping query params')
+      console.log(queryParams)
+
+      const searchString = (typeof queryParams.keyword !== 'undefined') ? queryParams.keyword : ''
+      const categoryId = (typeof queryParams.category !== 'undefined') ? queryParams.category : undefined
+      await this.setSearchString(searchString)
+      await this.setCategoryId(categoryId)
+      this.getProducts()
+    }
+  }
+
+  buildQuery() {
+    const { searchString, categoryId } = this.state
+
+    const queryParams = new Set()
+
+    if (typeof searchString === 'string') queryParams.add(`keyword=${searchString}`)
+    if (typeof categoryId === 'string') queryParams.add(`category=${categoryId}`)
+
+    return (queryParams.size > 0) ? `?${Array.from(queryParams).join('&')}` : null
+  }
+
+  handleSearchExprChanged(newSearchString) {
+    const { history } = this.props
+
+    this.setSearchString(newSearchString)
+      .then(() => {
+        const queryString = this.buildQuery()
+        history.push({
+          pathname: '/search',
+          search: (queryString) || undefined,
+        })
+      })
+  }
+
+  handleCategoryClicked(categoryId) {
+    const { history } = this.props
+    this.setSearchString(undefined)
+    this.setCategoryId(categoryId)
+      .then(() => {
+        const queryString = this.buildQuery()
+
+        history.push({
+          pathname: '/search',
+          search: (queryString) || undefined,
+        })
+      })
   }
 
   render() {
     const { products, categories } = this.props
     const { cart, cartContextManager } = this.context
+    const { searchString } = this.state
 
     // Note for i18n and i10n
     // if `id` is found, it will use the matched message
@@ -225,6 +318,8 @@ class ExampleView extends Component {
           {products instanceof Array && (
           <Grid item>
             <ProductSearchForm
+              key={searchString}
+              searchString={searchString}
               itemProperty="full_name"
               items={products.map((product) => product.data)}
               categories={categories}
@@ -236,7 +331,10 @@ class ExampleView extends Component {
           )}
         </Grid>
         <Grid container justify="space-around">
-          <SidebarFilters items={categories} />
+          <SidebarFilters
+            items={categories}
+            onCategoryClicked={(categoryId) => this.handleCategoryClicked(categoryId)}
+          />
           {products instanceof Array && (
           <CatalogPanel items={products} cart={cart} />
           )}

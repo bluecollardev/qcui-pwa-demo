@@ -37,7 +37,7 @@ webpackConfig.devServer = {
   // this config is using HTML5 History API
   // If you would like to switch back to browser history,
   // you can turn this to true, and modify app-history accordingly.
-  historyApiFallback: false,
+  historyApiFallback: true,
   disableHostCheck: true,
   clientLogLevel: 'error',
   compress: true,

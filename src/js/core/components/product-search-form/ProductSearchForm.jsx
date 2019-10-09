@@ -19,7 +19,6 @@ const useStyles = makeStyles(theme => ({
   root: {
     height: 'auto',
     flexGrow: 1,
-    width: '500px',
   },
   container: {
     position: 'relative',
@@ -84,15 +83,15 @@ function renderSuggestion(suggestion, { query, isHighlighted }) {
   )
 }
 
-export default function IntegrationAutosuggest(props) {
+export default function ProductAutosuggest(props) {
   const classes = useStyles()
 
-  const { label, items, itemProperty } = props
+  const { label, items, itemProperty, searchString } = props
 
   const [anchorEl, setAnchorEl] = React.useState(null)
   const [state, setState] = React.useState({
     single: '',
-    popper: '',
+    popper: (typeof searchString === 'string') ? searchString : '',
   })
 
   const [stateSuggestions, setSuggestions] = React.useState([])
@@ -130,18 +129,34 @@ export default function IntegrationAutosuggest(props) {
     setSuggestions([])
   }
 
-  const handleChange = name => (event, { newValue }) => {
+  const handleSearchExprChange = () => {
     const { onSearchExprChanged } = props
     if (props && typeof onSearchExprChanged === 'function') {
       // Call our actions
-      console.log(`search expression change handled, new value is: ${newValue}`)
-      onSearchExprChanged(newValue)
+      console.log(`search expression change handled, new value is: ${state.popper}`)
+      onSearchExprChanged(state.popper)
     }
+  }
 
+  const handleSearchExprClear = () => {
+    const { onSearchExprChanged } = props
+    if (props && typeof onSearchExprChanged === 'function') {
+      // Call our actions
+      console.log(`search expression change handled, new value is: ${state.popper}`)
+      onSearchExprChanged(null)
+    }
+  }
+
+  const handleAutocompleteChange = name => (event, { newValue }) => {
+    // Do something
     setState({
       ...state,
       [name]: newValue,
     })
+  }
+
+  const handleEnterKeyUp = (e) => {
+    if (e.key === 'Enter') handleSearchExprChange()
   }
 
   const autosuggestProps = {
@@ -168,7 +183,8 @@ export default function IntegrationAutosuggest(props) {
             label,
             placeholder: '',
             value: state.popper,
-            onChange: handleChange('popper'),
+            onChange: handleAutocompleteChange('popper'),
+            onKeyUp: handleEnterKeyUp,
             inputRef: node => {
               setAnchorEl(node)
             },
@@ -206,7 +222,19 @@ export default function IntegrationAutosuggest(props) {
         <Button
           aria-label="clear search"
           variant="outlined"
+          color="primary"
+          endIcon={<SearchIcon />}
+          onClick={() => handleSearchExprChange()}
+        >
+          Search
+        </Button>
+      </Grid>
+      <Grid item>
+        <Button
+          aria-label="clear search"
+          variant="outlined"
           endIcon={<ClearIcon />}
+          onClick={() => handleSearchExprClear()}
         >
           Clear
         </Button>

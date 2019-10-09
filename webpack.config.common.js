@@ -133,6 +133,7 @@ export const JS_SOURCE = config.get('jsSourcePath');
 export default {
   output: {
     path: path.join(__dirname, config.get('buildPath')),
+    publicPath: '/',
   },
   performance: {
     hints: process.env.NODE_ENV === 'production' ? "warning" : false
