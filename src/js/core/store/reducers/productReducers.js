@@ -44,7 +44,7 @@ export const reducers = {
 
 // TODO: Remove static data, it's in here as seed data because of the cors issue
 export const initialState = () => Map({
-  results: staticData || [],
+  results: [], // staticData || [],
 })
 
 export default handleActions(reducers, initialState())

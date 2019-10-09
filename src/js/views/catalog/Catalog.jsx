@@ -423,6 +423,12 @@ class ExampleView extends Component {
           <Grid item>
             <BreadcrumbsWithRouter key={JSON.stringify(this.buildBreadcrumbs())} path={this.buildBreadcrumbs()} />
           </Grid>
+          {typeof searchString === 'string' && searchString.length > 0 && (
+            <h1>
+              <small>Displaying results for </small>
+              "{searchString}"
+            </h1>
+          )}
           <Typography variant="subtitle1"><em></em></Typography>
           {products instanceof Array && (
           <Grid item>

@@ -8,7 +8,7 @@ import LazyLoading from '~/modules/lazy-loading'
 import styles from '../style/index.css'
 
 // This is show case how you can lazy loading component
-const ExampleRouteHandler = LazyLoading(() => import('views/example'))
+const CatalogRouteHandler = LazyLoading(() => import('views/catalog'))
 // const Header = LazyLoading(() => import('~/core/components/header/Header'))
 const MainAppBar = LazyLoading(() => import('~/core/components/app-bar'))
 
@@ -32,15 +32,15 @@ module.exports = (
     <Container className={styles.content} maxWidth={false}>
       <Switch>
         <Route exact path="/" render={(props) => {
-          return <ExampleRouteHandler {...props} />
+          return <CatalogRouteHandler {...props} />
         }}
         />
         <Route path="/search/" render={(props) => {
-          return <ExampleRouteHandler {...props} />
+          return <CatalogRouteHandler {...props} />
         }}
         />
         <Route path="/page" component={JustAnotherPage} />
-        <Route path="*" component={ExampleRouteHandler} />
+        <Route path="*" component={CatalogRouteHandler} />
       </Switch>
     </Container>
   </div>
